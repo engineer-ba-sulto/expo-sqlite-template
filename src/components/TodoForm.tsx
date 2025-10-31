@@ -34,7 +34,7 @@ export default function TodoForm({
   };
 
   return (
-    <View className="p-4 gap-4">
+    <View className="w-full p-4 gap-4">
       <View>
         <Text className="text-sm font-medium text-gray-700 mb-2">タイトル</Text>
         <Controller
