@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-template",
-    "slug": "expo-template",
+    "name": "expo-sqlite-template",
+    "slug": "expo-sqlite-template",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
