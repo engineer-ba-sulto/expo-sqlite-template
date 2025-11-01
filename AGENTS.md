@@ -1,5 +1,15 @@
 # React Native Expo Development Rules
 
+## ⚠️ Required: All Output Must Be in Japanese
+
+**Important**: All outputs (code comments, commit messages, documentation, explanations, etc.) must be written in Japanese.
+
+- Code comments must be written in Japanese
+- Commit messages must be written in Japanese
+- Documentation and explanations must be written in Japanese
+- Explanations in interactions with AI assistants must also be in Japanese
+- This is an absolute rule with no exceptions
+
 ## Technology Stack
 
 ### Core Frameworks & Language
