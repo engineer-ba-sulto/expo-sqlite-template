@@ -1,5 +1,5 @@
-import TodoForm from "@/components/TodoForm";
-import TodoItem from "@/components/TodoItem";
+import TodoForm from "@/components/todo/TodoForm";
+import TodoItem from "@/components/todo/TodoItem";
 import db from "@/drizzle/db";
 import migrations from "@/drizzle/migrations/migrations";
 import { todoTable } from "@/drizzle/schema/todoSchema";
