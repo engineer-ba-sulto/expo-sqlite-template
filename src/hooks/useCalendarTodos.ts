@@ -1,4 +1,4 @@
-import { formatDateToYMD, isSameDate, timestampToDate } from "@/lib/date";
+import { formatDateToYMD, isSameDate } from "@/lib/date";
 import { MarkedDateConfig } from "@/types/calendar";
 import { useMemo } from "react";
 
@@ -9,13 +9,13 @@ type TodoItem = {
   id: number;
   title: string;
   description: string;
-  createdAt: Date | number;
+  createdAt: Date;
 };
 
 /**
  * TODO用のカレンダーフックの戻り値の型
  */
-export type UseCalendarTodosReturn = {
+type UseCalendarTodosReturn = {
   /** カレンダーにマークする日付のマップ */
   markedDates: Record<string, MarkedDateConfig>;
   /** 選択された日付に基づいてフィルタリングされたTODOリスト */
@@ -53,13 +53,12 @@ export default function useCalendarTodos(
     const marked: Record<string, MarkedDateConfig> = {};
 
     todos.forEach((todo) => {
-      // createdAtがDate型かnumber型（timestamp）かを判定
-      const createdAtDate =
-        todo.createdAt instanceof Date
-          ? todo.createdAt
-          : timestampToDate(todo.createdAt as number);
+      // NaNチェック
+      if (isNaN(todo.createdAt.getTime())) {
+        return;
+      }
 
-      const dateKey = formatDateToYMD(createdAtDate);
+      const dateKey = formatDateToYMD(todo.createdAt);
 
       // 既にマークされている日付の場合は、マーク数を増やす
       if (marked[dateKey]) {
@@ -82,12 +81,12 @@ export default function useCalendarTodos(
     }
 
     return todos.filter((todo) => {
-      const createdAtDate =
-        todo.createdAt instanceof Date
-          ? todo.createdAt
-          : timestampToDate(todo.createdAt as number);
+      // NaNチェック
+      if (isNaN(todo.createdAt.getTime())) {
+        return false;
+      }
 
-      return isSameDate(createdAtDate, selectedDate);
+      return isSameDate(todo.createdAt, selectedDate);
     });
   }, [todos, selectedDate]);
 
