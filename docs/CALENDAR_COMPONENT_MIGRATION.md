@@ -89,13 +89,13 @@ TODO以外のデータを使用する場合は、独自のフックを作成し�
 ```typescript
 // src/hooks/useCalendarYourData.ts
 import { useMemo } from "react";
-import { formatDateToYMD, isSameDate, timestampToDate } from "@/lib/date";
+import { formatDateToYMD, isSameDate } from "@/lib/date";
 import { MarkedDateConfig } from "@/types/calendar";
 
 type YourDataItem = {
   id: number;
   // あなたのデータ構造
-  createdAt: Date | number;
+  createdAt: Date; // Drizzleのmode: "timestamp"を使用している場合はDate型
 };
 
 export default function useCalendarYourData(
@@ -106,11 +106,12 @@ export default function useCalendarYourData(
     const marked: Record<string, MarkedDateConfig> = {};
 
     items.forEach((item) => {
-      const dateKey = formatDateToYMD(
-        item.createdAt instanceof Date
-          ? item.createdAt
-          : timestampToDate(item.createdAt as number)
-      );
+      // NaNチェック
+      if (isNaN(item.createdAt.getTime())) {
+        return;
+      }
+
+      const dateKey = formatDateToYMD(item.createdAt);
 
       marked[dateKey] = {
         marked: true,
@@ -127,12 +128,12 @@ export default function useCalendarYourData(
     }
 
     return items.filter((item) => {
-      const createdAtDate =
-        item.createdAt instanceof Date
-          ? item.createdAt
-          : timestampToDate(item.createdAt as number);
+      // NaNチェック
+      if (isNaN(item.createdAt.getTime())) {
+        return false;
+      }
 
-      return isSameDate(createdAtDate, selectedDate);
+      return isSameDate(item.createdAt, selectedDate);
     });
   }, [items, selectedDate]);
 
@@ -337,50 +338,39 @@ export default function CustomStyledCalendar() {
 
 DateオブジェクトをYYYY-MM-DD形式の文字列に変換します。
 
-#### `parseYMDToDate(ymd: string): Date`
-
-YYYY-MM-DD形式の文字列をDateオブジェクトに変換します。
-
 #### `isSameDate(date1: Date, date2: Date): boolean`
 
 2つの日付が同じ日かどうかを判定します（時刻は無視）。
-
-#### `timestampToDate(timestamp: number): Date`
-
-タイムスタンプ（秒単位またはミリ秒単位の整数）をDateオブジェクトに変換します。
-
-#### `resetTimeToMidnight(date: Date): Date`
-
-Dateオブジェクトの時刻部分を00:00:00にリセットします。
 
 ## トラブルシューティング
 
 ### 日付が正しく表示されない
 
-- `createdAt`がDate型ではなくnumber型（timestamp）の場合、`timestampToDate`を使用して変換してください。
-- タイムゾーンの問題がある場合は、`resetTimeToMidnight`を使用して時刻をリセットしてください。
+- Drizzleの`mode: "timestamp"`を使用している場合、`createdAt`と`updatedAt`は自動的にDateオブジェクトに変換されます
+- NaNが発生している場合は、データベースに保存されている値が無効な可能性があります。NaNチェックを追加してください
 
 ### カレンダーが表示されない
 
-- `react-native-calendars`が正しくインストールされているか確認してください。
-- NativeWindが正しく設定されているか確認してください。
+- `react-native-calendars`が正しくインストールされているか確認してください
+- NativeWindが正しく設定されているか確認してください
 
 ### 日付のマーキングが反映されない
 
-- `markedDates`のキーがYYYY-MM-DD形式になっているか確認してください。
-- `formatDateToYMD`を使用して日付をフォーマットしてください。
+- `markedDates`のキーがYYYY-MM-DD形式になっているか確認してください
+- `formatDateToYMD`を使用して日付をフォーマットしてください
 
 ### パフォーマンスの問題
 
-- 大量のデータがある場合、`useMemo`を使用してマーキングデータの再計算を最適化してください。
-- カスタムフック内で既に`useMemo`を使用しているため、大きな問題はないはずです。
+- 大量のデータがある場合、`useMemo`を使用してマーキングデータの再計算を最適化してください
+- カスタムフック内で既に`useMemo`を使用しているため、大きな問題はないはずです
 
 ## 注意事項
 
-1. **日付形式の統一**: 常にYYYY-MM-DD形式を使用してください。
-2. **タイムスタンプの扱い**: SQLiteのタイムスタンプは秒単位の場合とミリ秒単位の場合があるため、`timestampToDate`を使用してください。
-3. **型安全性**: TypeScriptの型定義を活用して、コンパイル時にエラーを検出してください。
-4. **パフォーマンス**: 大量のデータがある場合は、適切にメモ化してください。
+1. **日付形式の統一**: 常にYYYY-MM-DD形式を使用してください
+2. **Drizzleのmode: "timestamp"**: Drizzleの`mode: "timestamp"`を使用している場合、日付は自動的にDateオブジェクトに変換されます。追加の変換処理は不要です
+3. **型安全性**: TypeScriptの型定義を活用して、コンパイル時にエラーを検出してください
+4. **パフォーマンス**: 大量のデータがある場合は、適切にメモ化してください
+5. **NaNチェック**: データベースから取得したDateオブジェクトがNaNの場合があるため、必要に応じてNaNチェックを追加してください
 
 ## 関連ファイル
 
@@ -388,7 +378,3 @@ Dateオブジェクトの時刻部分を00:00:00にリセットします。
 - `src/hooks/useCalendarTodos.ts` - TODO用のカスタムフック（参考実装）
 - `src/lib/date.ts` - 日付ユーティリティ関数
 - `src/types/calendar.ts` - 型定義
-
-## ライセンス
-
-このコンポーネントは、プロジェクトのライセンスに準拠します。
