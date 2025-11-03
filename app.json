@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "expo-sqlite-template",
-    "slug": "expo-sqlite-template",
+    "name": "fast-work-timer",
+    "slug": "fast-work-timer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "expo-sqlite-template",
+    "scheme": "fast-work-timer",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
