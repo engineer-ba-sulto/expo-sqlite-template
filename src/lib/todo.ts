@@ -9,6 +9,7 @@ export default async function createTodo(input: CreateTodoInput) {
     .values({
       title: input.title,
       description: input.description,
+      createdAt: new Date(), // 明示的にDateオブジェクトを指定
     })
     .returning();
 
