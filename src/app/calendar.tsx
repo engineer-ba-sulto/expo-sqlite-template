@@ -93,14 +93,14 @@ export default function CalendarPage() {
         </View>
 
         {/* TODO一覧 */}
+        <Text className="text-xl font-semibold mb-4">
+          {selectedDate
+            ? `${selectedDate.getFullYear()}年${
+                selectedDate.getMonth() + 1
+              }月${selectedDate.getDate()}日のTodo一覧`
+            : "日付を選択してTodoを確認"}
+        </Text>
         <ScrollView className="mt-4">
-          <Text className="text-xl font-semibold mb-4">
-            {selectedDate
-              ? `${selectedDate.getFullYear()}年${
-                  selectedDate.getMonth() + 1
-                }月${selectedDate.getDate()}日のTodo一覧`
-              : "日付を選択してTodoを確認"}
-          </Text>
           {selectedDate ? (
             filteredTodos && filteredTodos.length > 0 ? (
               filteredTodos.map((todo) => (
