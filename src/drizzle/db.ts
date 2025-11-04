@@ -1,8 +1,14 @@
+import { DB_CONFIG } from "@/constants/db";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { openDatabaseSync } from "expo-sqlite";
-import * as userSchema from "./schema/todoSchema";
+import * as todoSchema from "./schema/todoSchema";
 
-const expoDb = openDatabaseSync("db.db", { enableChangeListener: true });
-const db = drizzle(expoDb, { schema: userSchema });
+// データベースファイルを開く
+const expoDb = openDatabaseSync(DB_CONFIG.fileName, {
+  enableChangeListener: DB_CONFIG.enableChangeListener,
+});
+
+// Drizzle ORMインスタンスを作成
+const db = drizzle(expoDb, { schema: todoSchema });
 
 export default db;

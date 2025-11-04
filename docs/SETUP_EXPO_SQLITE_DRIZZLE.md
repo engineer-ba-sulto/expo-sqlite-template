@@ -6,10 +6,11 @@
 
 1. [必要なパッケージのインストール](#必要なパッケージのインストール)
 2. [Drizzle設定ファイルの作成](#drizzle設定ファイルの作成)
-3. [データベース接続ファイルの作成](#データベース接続ファイルの作成)
-4. [スキーマ定義の作成](#スキーマ定義の作成)
-5. [マイグレーションの生成と実行](#マイグレーションの生成と実行)
-6. [使用例](#使用例)
+3. [データベース設定ファイルの作成](#データベース設定ファイルの作成)
+4. [データベース接続ファイルの作成](#データベース接続ファイルの作成)
+5. [スキーマ定義の作成](#スキーマ定義の作成)
+6. [マイグレーションの生成と実行](#マイグレーションの生成と実行)
+7. [使用例](#使用例)
 
 ## 参考リンク
 
@@ -56,17 +57,45 @@ export default defineConfig({
 - `out`: マイグレーションファイルの出力先
 - `driver`: Expo環境を使用することを指定
 
+## データベース設定ファイルの作成
+
+`src/constants/db.ts` を作成して、データベース設定を定数として管理します。
+
+```typescript
+/**
+ * データベース設定定数
+ */
+export const DB_CONFIG = {
+  /** データベースファイル名 */
+  fileName: "expo-sqlite-template.sqlite",
+  /** 変更リスナーを有効化するか */
+  enableChangeListener: true,
+} as const;
+```
+
+### ポイント
+
+- データベースファイル名やオプションを一元管理
+- 設定を変更する際はこのファイルを修正するだけでOK
+- 環境ごとに異なる設定を使用する場合も、このファイルを変更するだけで対応可能
+
 ## データベース接続ファイルの作成
 
 `src/drizzle/db.ts` を作成して、データベース接続を初期化します。
 
 ```typescript
+import { DB_CONFIG } from "@/constants/db";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { openDatabaseSync } from "expo-sqlite";
-import * as userSchema from "./schema/todoSchema";
+import * as todoSchema from "./schema/todoSchema";
 
-const expoDb = openDatabaseSync("db.db", { enableChangeListener: true });
-const db = drizzle(expoDb, { schema: userSchema });
+// データベースファイルを開く
+const expoDb = openDatabaseSync(DB_CONFIG.fileName, {
+  enableChangeListener: DB_CONFIG.enableChangeListener,
+});
+
+// Drizzle ORMインスタンスを作成
+const db = drizzle(expoDb, { schema: todoSchema });
 
 export default db;
 ```
@@ -74,11 +103,12 @@ export default db;
 ### ポイント
 
 - `openDatabaseSync`: データベースファイルを開く（同期バージョン）
-  - 第一引数: データベースファイル名（例: `"db.db"`）
-  - 第二引数: オプション（`enableChangeListener: true` で変更を監視）
+  - 第一引数: データベースファイル名（`DB_CONFIG.fileName` から取得）
+  - 第二引数: オプション（`DB_CONFIG.enableChangeListener` から取得）
 - `drizzle`: Drizzle ORMインスタンスを作成
   - 第一引数: SQLiteデータベースインスタンス
   - 第二引数: スキーマオブジェクトを指定（型推論とリレーションに使用）
+- 設定は `constants/db.ts` から読み込むことで、保守性が向上
 
 ## スキーマ定義の作成
 
@@ -234,6 +264,8 @@ await db.delete(todoTable).where(eq(todoTable.id, 1));
 
 ```
 src/
+├── constants/                   # 設定定数
+│   └── db.ts                   # データベース設定
 └── drizzle/
     ├── db.ts                    # データベース接続ファイル
     ├── schema/                  # スキーマ定義
@@ -251,7 +283,7 @@ src/
 
 1. **マイグレーションファイル**: Expo SQLiteを使用する場合、`migrations.js` ファイルが必要です。このファイルは `drizzle-kit generate` によって自動生成されます。
 
-2. **データベースファイルの場所**: `openDatabaseSync` で開いたデータベースファイルは、アプリのローカルストレージに保存されます。
+2. **データベースファイルの場所**: `openDatabaseSync` で開いたデータベースファイルは、アプリのローカルストレージに保存されます。ファイル名は `src/constants/db.ts` で設定できます。
 
 3. **型安全性**: スキーマを定義することで、TypeScriptの型推論が効きます。クエリの際に型チェックが働きます。
 
