@@ -1,6 +1,6 @@
-import { DB_CONFIG } from "@/constants/db";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { openDatabaseSync } from "expo-sqlite";
+import { DB_CONFIG } from "@/constants/db";
 import * as todoSchema from "./schema/todoSchema";
 
 // データベースファイルを開く

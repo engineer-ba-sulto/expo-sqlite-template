@@ -1,10 +1,65 @@
-import { formatDateToYMD } from "@/lib/date";
-import { CalendarProps } from "@/types/calendar";
 import { View } from "react-native";
 import {
   Calendar as RNCalendar,
-  CalendarProps as RNCalendarProps,
+  type CalendarProps as RNCalendarProps,
 } from "react-native-calendars";
+import { formatDateToYMD } from "@/lib/date";
+import type { CalendarProps } from "@/types/calendar";
+
+type CalendarMarking = {
+  marked?: boolean;
+  selected?: boolean;
+  selectedColor?: string;
+  dotColor?: string;
+  textColor?: string;
+  dots?: { color: string; selectedDotColor?: string }[];
+};
+
+type CalendarMarkedDates = Record<string, CalendarMarking>;
+
+const mapMarkedDateConfigToMarkingProps = (
+  config: CalendarProps["markedDates"][string],
+): CalendarMarking => {
+  return {
+    marked: config.marked,
+    selected: config.selected,
+    selectedColor: config.selectedColor,
+    dotColor: config.markedColor,
+    textColor: config.textColor,
+    dots: config.dots?.map((dot) => ({
+      color: dot.color,
+      selectedDotColor: dot.selectedColor,
+    })),
+  };
+};
+
+const buildMarkedDates = (
+  markedDates: CalendarProps["markedDates"],
+  selectedDate?: Date,
+): CalendarMarkedDates => {
+  const baseMarkedDates: CalendarMarkedDates = Object.fromEntries(
+    Object.entries(markedDates).map(([dateKey, config]) => [
+      dateKey,
+      mapMarkedDateConfigToMarkingProps(config),
+    ]),
+  );
+
+  if (!selectedDate) {
+    return baseMarkedDates;
+  }
+
+  const selectedDateKey = formatDateToYMD(selectedDate);
+  const existingConfig = baseMarkedDates[selectedDateKey] ?? {};
+
+  return {
+    ...baseMarkedDates,
+    [selectedDateKey]: {
+      ...existingConfig,
+      selected: true,
+      selectedColor: existingConfig.selectedColor ?? "#00adf5",
+    },
+  };
+};
 
 /**
  * 汎用的なカレンダーコンポーネント
@@ -36,18 +91,7 @@ export default function Calendar({
   maxDate,
   ...restProps
 }: CalendarProps & Omit<RNCalendarProps, "markedDates" | "onDayPress">) {
-  // 選択された日付をYYYY-MM-DD形式に変換してmarkedDatesに追加
-  const enrichedMarkedDates = { ...markedDates };
-
-  if (selectedDate) {
-    const selectedDateKey = formatDateToYMD(selectedDate);
-    enrichedMarkedDates[selectedDateKey] = {
-      ...enrichedMarkedDates[selectedDateKey],
-      selected: true,
-      selectedColor:
-        enrichedMarkedDates[selectedDateKey]?.selectedColor || "#00adf5",
-    };
-  }
+  const enrichedMarkedDates = buildMarkedDates(markedDates, selectedDate);
 
   // react-native-calendarsのonDayPressに合わせてDateオブジェクトに変換
   const handleDayPress = (day: { dateString: string }) => {
@@ -60,7 +104,7 @@ export default function Calendar({
   return (
     <View className={className}>
       <RNCalendar
-        markedDates={enrichedMarkedDates as any}
+        markedDates={enrichedMarkedDates}
         onDayPress={handleDayPress}
         current={current}
         minDate={minDate}

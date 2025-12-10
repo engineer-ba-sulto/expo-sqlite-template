@@ -1,20 +1,17 @@
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
-import { CreateTodoInput } from "@/types/todo";
-import { createTodoSchema } from "@/zod/todo.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Text, View } from "react-native";
+import Button from "@/components/ui/Button";
+import TextInput from "@/components/ui/TextInput";
+import type { CreateTodoInput } from "@/types/todo";
+import { createTodoSchema } from "@/zod/todo.schema";
 
 interface TodoFormProps {
   onSubmit: (data: CreateTodoInput) => void | Promise<void>;
   isLoading?: boolean;
 }
 
-export default function TodoForm({
-  onSubmit,
-  isLoading = false,
-}: TodoFormProps) {
+export default function TodoForm({ onSubmit, isLoading = false }: TodoFormProps) {
   const {
     control,
     handleSubmit,
@@ -49,11 +46,7 @@ export default function TodoForm({
             />
           )}
         />
-        {errors.title && (
-          <Text className="text-red-500 text-sm mt-1">
-            {errors.title.message}
-          </Text>
-        )}
+        {errors.title && <Text className="text-red-500 text-sm mt-1">{errors.title.message}</Text>}
       </View>
 
       <View>
@@ -74,9 +67,7 @@ export default function TodoForm({
           )}
         />
         {errors.description && (
-          <Text className="text-red-500 text-sm mt-1">
-            {errors.description.message}
-          </Text>
+          <Text className="text-red-500 text-sm mt-1">{errors.description.message}</Text>
         )}
       </View>
 
