@@ -11,7 +11,10 @@ interface TodoFormProps {
   isLoading?: boolean;
 }
 
-export default function TodoForm({ onSubmit, isLoading = false }: TodoFormProps) {
+export default function TodoForm({
+  onSubmit,
+  isLoading = false,
+}: TodoFormProps) {
   const {
     control,
     handleSubmit,
@@ -46,7 +49,11 @@ export default function TodoForm({ onSubmit, isLoading = false }: TodoFormProps)
             />
           )}
         />
-        {errors.title && <Text className="text-red-500 text-sm mt-1">{errors.title.message}</Text>}
+        {errors.title && (
+          <Text className="text-red-500 text-sm mt-1">
+            {errors.title.message}
+          </Text>
+        )}
       </View>
 
       <View>
@@ -67,7 +74,9 @@ export default function TodoForm({ onSubmit, isLoading = false }: TodoFormProps)
           )}
         />
         {errors.description && (
-          <Text className="text-red-500 text-sm mt-1">{errors.description.message}</Text>
+          <Text className="text-red-500 text-sm mt-1">
+            {errors.description.message}
+          </Text>
         )}
       </View>
 
