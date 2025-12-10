@@ -43,8 +43,7 @@ React Native + Expo で構築されたTodo管理アプリケーションです�
 ### 開発ツール
 
 - **Bun** - パッケージマネージャー
-- **ESLint** - コードリンティング
-- **Prettier** - コードフォーマッター
+- **Biome** - フォーマッター兼リンター
 - **Drizzle Kit** (0.31.6) - マイグレーション管理
 
 ## セットアップ
@@ -236,6 +235,12 @@ bun run web
 
 # データベースマイグレーションを生成
 bun run db:generate
+
+# コード品質チェック
+bun run lint
+
+# コード整形
+bun run format
 ```
 
 ## 設定ファイル

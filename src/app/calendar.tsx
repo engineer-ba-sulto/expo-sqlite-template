@@ -1,3 +1,8 @@
+import { useLiveQuery } from "drizzle-orm/expo-sqlite";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { useState } from "react";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import TodoItem from "@/components/todo/TodoItem";
 import Calendar from "@/components/ui/Calendar";
 import db from "@/drizzle/db";
@@ -5,12 +10,7 @@ import migrations from "@/drizzle/migrations/migrations";
 import { todoTable } from "@/drizzle/schema/todoSchema";
 import useCalendarTodos from "@/hooks/useCalendarTodos";
 import { deleteTodo, updateTodo } from "@/lib/todo";
-import { UpdateTodoInput } from "@/types/todo";
-import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { useState } from "react";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import type { UpdateTodoInput } from "@/types/todo";
 
 export default function CalendarPage() {
   const { success, error } = useMigrations(db, migrations);
@@ -18,10 +18,7 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   // カレンダー用のTODO処理
-  const { markedDates, filteredTodos } = useCalendarTodos(
-    data || [],
-    selectedDate
-  );
+  const { markedDates, filteredTodos } = useCalendarTodos(data || [], selectedDate);
 
   const handleUpdate = async (input: UpdateTodoInput) => {
     try {

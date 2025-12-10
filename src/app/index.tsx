@@ -1,22 +1,15 @@
+import { useLiveQuery } from "drizzle-orm/expo-sqlite";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { useState } from "react";
+import { Alert, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import TodoForm from "@/components/todo/TodoForm";
 import TodoItem from "@/components/todo/TodoItem";
 import db from "@/drizzle/db";
 import migrations from "@/drizzle/migrations/migrations";
 import { todoTable } from "@/drizzle/schema/todoSchema";
 import createTodo, { deleteTodo, updateTodo } from "@/lib/todo";
-import { CreateTodoInput, UpdateTodoInput } from "@/types/todo";
-import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { useState } from "react";
-import {
-  Alert,
-  Modal,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import type { CreateTodoInput, UpdateTodoInput } from "@/types/todo";
 
 export default function Index() {
   const { success, error } = useMigrations(db, migrations);
@@ -109,9 +102,7 @@ export default function Index() {
               ))
             ) : (
               <View className="items-center justify-center py-8">
-                <Text className="text-gray-500 text-center">
-                  Todoがありません
-                </Text>
+                <Text className="text-gray-500 text-center">Todoがありません</Text>
                 <Text className="text-gray-400 text-sm mt-2">
                   右上の「新規作成」ボタンから追加してください
                 </Text>
@@ -137,10 +128,7 @@ export default function Index() {
           <View className="bg-white rounded-t-3xl p-6 max-h-[90%]">
             <View className="flex-row items-center justify-between mb-4">
               <Text className="text-xl font-bold">新しいTodoを作成</Text>
-              <TouchableOpacity
-                onPress={() => setIsModalVisible(false)}
-                className="px-3 py-1"
-              >
+              <TouchableOpacity onPress={() => setIsModalVisible(false)} className="px-3 py-1">
                 <Text className="text-blue-500 font-semibold">閉じる</Text>
               </TouchableOpacity>
             </View>
