@@ -54,7 +54,7 @@ export default function useCalendarTodos(
 
     todos.forEach((todo) => {
       // NaNチェック
-      if (isNaN(todo.createdAt.getTime())) {
+      if (Number.isNaN(todo.createdAt.getTime())) {
         return;
       }
 
@@ -82,7 +82,7 @@ export default function useCalendarTodos(
 
     return todos.filter((todo) => {
       // NaNチェック
-      if (isNaN(todo.createdAt.getTime())) {
+      if (Number.isNaN(todo.createdAt.getTime())) {
         return false;
       }
 
