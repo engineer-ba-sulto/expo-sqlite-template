@@ -18,7 +18,10 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   // カレンダー用のTODO処理
-  const { markedDates, filteredTodos } = useCalendarTodos(data || [], selectedDate);
+  const { markedDates, filteredTodos } = useCalendarTodos(
+    data || [],
+    selectedDate,
+  );
 
   const handleUpdate = async (input: UpdateTodoInput) => {
     try {
