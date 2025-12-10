@@ -1,11 +1,11 @@
-import Button from "@/components/ui/Button";
-import TextInput from "@/components/ui/TextInput";
-import { UpdateTodoInput } from "@/types/todo";
-import { todoSchema } from "@/zod/todo.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
+import Button from "@/components/ui/Button";
+import TextInput from "@/components/ui/TextInput";
+import type { UpdateTodoInput } from "@/types/todo";
+import { todoSchema } from "@/zod/todo.schema";
 
 interface TodoItemProps {
   todo: {
@@ -69,9 +69,7 @@ export default function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
     return (
       <View className="p-4 border-b border-gray-200 bg-gray-50">
         <View className="mb-3">
-          <Text className="text-sm font-medium text-gray-700 mb-2">
-            タイトル
-          </Text>
+          <Text className="text-sm font-medium text-gray-700 mb-2">タイトル</Text>
           <Controller
             control={control}
             name="title"
@@ -86,9 +84,7 @@ export default function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
             )}
           />
           {errors.title && (
-            <Text className="text-red-500 text-sm mt-1">
-              {errors.title.message}
-            </Text>
+            <Text className="text-red-500 text-sm mt-1">{errors.title.message}</Text>
           )}
         </View>
 
@@ -111,9 +107,7 @@ export default function TodoItem({ todo, onUpdate, onDelete }: TodoItemProps) {
             )}
           />
           {errors.description && (
-            <Text className="text-red-500 text-sm mt-1">
-              {errors.description.message}
-            </Text>
+            <Text className="text-red-500 text-sm mt-1">{errors.description.message}</Text>
           )}
         </View>
 

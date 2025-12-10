@@ -1,10 +1,10 @@
-import { formatDateToYMD } from "@/lib/date";
-import { CalendarProps } from "@/types/calendar";
 import { View } from "react-native";
 import {
   Calendar as RNCalendar,
-  CalendarProps as RNCalendarProps,
+  type CalendarProps as RNCalendarProps,
 } from "react-native-calendars";
+import { formatDateToYMD } from "@/lib/date";
+import type { CalendarProps } from "@/types/calendar";
 
 /**
  * 汎用的なカレンダーコンポーネント
@@ -44,8 +44,7 @@ export default function Calendar({
     enrichedMarkedDates[selectedDateKey] = {
       ...enrichedMarkedDates[selectedDateKey],
       selected: true,
-      selectedColor:
-        enrichedMarkedDates[selectedDateKey]?.selectedColor || "#00adf5",
+      selectedColor: enrichedMarkedDates[selectedDateKey]?.selectedColor || "#00adf5",
     };
   }
 

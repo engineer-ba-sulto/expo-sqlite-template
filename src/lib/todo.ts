@@ -1,7 +1,7 @@
+import { eq } from "drizzle-orm";
 import db from "@/drizzle/db";
 import { todoTable } from "@/drizzle/schema/todoSchema";
-import { CreateTodoInput, UpdateTodoInput } from "@/types/todo";
-import { eq } from "drizzle-orm";
+import type { CreateTodoInput, UpdateTodoInput } from "@/types/todo";
 
 export default async function createTodo(input: CreateTodoInput) {
   const result = await db

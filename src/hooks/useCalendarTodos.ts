@@ -1,6 +1,6 @@
-import { formatDateToYMD, isSameDate } from "@/lib/date";
-import { MarkedDateConfig } from "@/types/calendar";
 import { useMemo } from "react";
+import { formatDateToYMD, isSameDate } from "@/lib/date";
+import type { MarkedDateConfig } from "@/types/calendar";
 
 /**
  * TODOアイテムの型定義
@@ -46,7 +46,7 @@ type UseCalendarTodosReturn = {
  */
 export default function useCalendarTodos(
   todos: TodoItem[],
-  selectedDate?: Date
+  selectedDate?: Date,
 ): UseCalendarTodosReturn {
   // TODO配列から日付マーキングデータを生成
   const markedDates = useMemo(() => {
